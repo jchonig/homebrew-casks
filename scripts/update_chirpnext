@@ -1,4 +1,6 @@
-#!/bin/bash -x
+#!/bin/bash
+
+set -e -o pipefail
 
 while IFS= read -r line; do
     if [[ $line =~ (next-20[0-9]{6})/ ]]; then
@@ -29,17 +31,19 @@ if [ -z "${uri}" ]; then
     exit 1
 fi
 
-echo "${version} ${new_sha} ${uri}"
+# Get the full sha256 checksum
+parts=($(curl -s "https://archive.chirpmyradio.com/chirp_next/${latest}/${uri}" | sha256sum -))
+new_sha=${parts[0]}
 
 current_version=$(sed -n 's/^[[:space:]]*version[[:space:]]*"\([^"]*\)".*/\1/p' Casks/chirp.rb)
 current_sha=$(sed -n 's/^[[:space:]]*sha256[[:space:]]*"\([^"]*\)".*/\1/p' Casks/chirp.rb)
 
-if [ "${current_version}" = "${new_version}" ] && [ "${current_sha}" = "${new_sha}" ]; then
+if [[ "${current_version}" = "${new_version}" && "${current_sha}" = "${new_sha}" ]]; then
     echo "No update needed"
 else
     sed -I "" -e "s/version \"[^\"]*\"/version \"${new_version}\"/" Casks/chirp.rb
     sed -I "" -e "s/sha256 \"[^\"]*\"/sha256 \"${new_sha}\"/" Casks/chirp.rb
-    git add Cask/chirp.rb
+    git add Casks/chirp.rb
     git commit -m"Update Chirp to ${new_version}"
     git push
 fi
