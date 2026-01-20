@@ -5,6 +5,11 @@ be pushed upstream.
 
 ## Chirp
 
-The upstream cask for Chirp is disabled indicating that there are
-sometimes Cloudflare errors.
+The latest release of [Chirp-Next](https://chirpmyradio.com/projects/chirp/wiki/Home).
+
+## HamClockLauncher
+
+[HamClockLaunder](https://huberthickman.github.io/HamClockLauncher/)
+is a macOS launcher for
+[HamClock](https://www.clearskyinstitute.com/ham/HamClock/).
 

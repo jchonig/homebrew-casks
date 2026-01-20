@@ -1,5 +1,5 @@
 cask "hamclocklauncher" do
-  version "1.1"
+  version "${VERSION}"
 
   name "HamClock Launcher"
   desc "macOS GUI launcher for the HamClock web application"
@@ -7,12 +7,12 @@ cask "hamclocklauncher" do
 
   on_intel do
     url "https://github.com/huberthickman/HamClockLauncher/releases/download/release_#{version.dots_to_underscores}/HamClockLauncherIntel.dmg"
-    sha256 "72bb4951d520049ef2a954e7df7a0753c61354cebe4ea39c9debaa1f56307f16"
+    sha256 "${INTEL_SHA}"
   end
 
   on_arm do
     url "https://github.com/huberthickman/HamClockLauncher/releases/download/release_#{version.dots_to_underscores}/HamClockLauncher.dmg"
-    sha256 "63e695f7877d16b46a8b92fd0096846b8981c7cb90fc7cd21fff828057ffe140"
+    sha256 "${ARM_SHA}"
   end
 
   app "HamClockLauncher.app"

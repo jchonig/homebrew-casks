@@ -1,0 +1,75 @@
+name: Update HamClockLauncher Cask
+
+on:
+  schedule:
+    - cron: "0 6 * * *"   # daily at 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  update-cask:
+    runs-on: macos-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Get latest release info
+        id: release
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const repo = "huberthickman/HamClockLauncher";
+            const [owner, name] = repo.split("/");
+            const release = await github.rest.repos
+              .getLatestRelease({ owner, repo: name });
+
+            const tag = release.data.tag_name; // e.g. release_1_1
+            const version = tag.replace(/^release_/, "").replace(/_/g, ".");
+
+            core.setOutput("tag", tag);
+            core.setOutput("version", version);
+
+      - name: Download release assets
+        run: |
+          set -e
+
+          TAG="${{ steps.release.outputs.tag }}"
+          VERSION="${{ steps.release.outputs.version }}"
+
+          BASE_URL="https://github.com/huberthickman/HamClockLauncher/releases/download/${TAG}"
+          curl -q -L -o HamClockLauncherIntel.dmg "${BASE_URL}/HamClockLauncherIntel.dmg"
+          curl -q -L -o HamClockLauncher.dmg "${BASE_URL}/HamClockLauncher.dmg"
+
+      - name: Compute SHA-256 checksums
+        id: shas
+        run: |
+          INTEL_SHA=$(shasum -a 256 HamClockLauncherIntel.dmg | awk '{print $1}')
+          ARM_SHA=$(shasum -a 256 HamClockLauncher.dmg | awk '{print $1}')
+
+          echo "intel_sha=$INTEL_SHA" >> "$GITHUB_OUTPUT"
+          echo "arm_sha=$ARM_SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Update cask file
+        run: |
+          set -e
+
+          CASK="Casks/hamclocklauncher.rb"
+          export VERSION="${{ steps.release.outputs.version }}"
+          export INTEL_SHA="${{ steps.shas.outputs.intel_sha }}"
+          export ARM_SHA="${{ steps.shas.outputs.arm_sha }}"
+
+          envsubst < "${CASK}.in" > "${CASK}"
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          if git diff --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git add Casks/hamclocklauncher.rb
+          git commit -m "Update HamClockLauncher cask to v${{ steps.release.outputs.version }}"
+          git push
