@@ -3,10 +3,6 @@
 This contains Casks that I am developing, or that are not suitable to
 be pushed upstream.
 
-## Chirp
-
-The latest release of [Chirp-Next](https://chirpmyradio.com/projects/chirp/wiki/Home).
-
 ## HamClockLauncher
 
 [HamClockLaunder](https://huberthickman.github.io/HamClockLauncher/)
