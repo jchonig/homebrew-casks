@@ -1,19 +1,13 @@
 cask "antscope2" do
-  on_sequoia :or_later do
-    version "${SEQUOIA_VERSION}"
-    sha256 "${SEQUOIA_SHA256}"
-    url "${SEQUOIA_URL}"
-  end
+  version "${VERSION}"
+  sha256 "${SHA256}"
 
-  on_sonoma :or_earlier do
-    version "${SONOMA_VERSION}"
-    sha256 "${SONOMA_SHA256}"
-    url "${SONOMA_URL}"
-  end
-
+  url "${URL}"
   name "AntScope2"
   desc "Antenna analyzer software for RigExpert devices"
   homepage "https://rigexpert.com/products/software/antscope2/"
+
+  depends_on macos: :sequoia
 
   app "AntScope2.app"
 

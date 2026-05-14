@@ -15,7 +15,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Find latest versions and URLs
+      - name: Find latest version and URL
         id: versions
         run: |
           python3 << 'EOF'
@@ -39,58 +39,41 @@ jobs:
           html = fetch(BASE)
           hrefs = re.findall(r'href="([^"]+/)"', html)
 
-          sequoia_dirs = sorted(
-              [h for h in hrefs if "Sequoia" in urllib.parse.unquote(h)],
+          latest_dirs = sorted(
+              [h for h in hrefs if urllib.parse.unquote(h).startswith("From")],
               key=version_key,
           )
-          sonoma_dirs = [
-              h for h in hrefs
-              if urllib.parse.unquote(h).startswith("Up") and "Sonoma" in urllib.parse.unquote(h)
-          ]
 
-          if not sequoia_dirs or not sonoma_dirs:
-              print("ERROR: could not find expected directories", file=sys.stderr)
+          if not latest_dirs:
+              print("ERROR: could not find any 'From MacOS' directories", file=sys.stderr)
               sys.exit(1)
 
-          sequoia_dir = sequoia_dirs[-1]
-          sonoma_dir  = sonoma_dirs[-1]
+          latest_dir = latest_dirs[-1]
+          dmg = find_dmg(fetch(BASE + latest_dir))
 
-          sequoia_dmg = find_dmg(fetch(BASE + sequoia_dir))
-          sonoma_dmg  = find_dmg(fetch(BASE + sonoma_dir))
-
-          if not sequoia_dmg or not sonoma_dmg:
-              print("ERROR: could not find DMG files", file=sys.stderr)
+          if not dmg:
+              print("ERROR: could not find DMG file", file=sys.stderr)
               sys.exit(1)
 
-          def get_version(fname):
-              m = re.search(r"AntScope2_([0-9.]+)_mac\.dmg", fname)
-              return m.group(1) if m else ""
+          m = re.search(r"AntScope2_([0-9.]+)_mac\.dmg", dmg)
+          version = m.group(1) if m else ""
 
           with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-              f.write(f"sequoia_version={get_version(sequoia_dmg)}\n")
-              f.write(f"sequoia_url={BASE}{sequoia_dir}{sequoia_dmg}\n")
-              f.write(f"sonoma_version={get_version(sonoma_dmg)}\n")
-              f.write(f"sonoma_url={BASE}{sonoma_dir}{sonoma_dmg}\n")
+              f.write(f"version={version}\n")
+              f.write(f"url={BASE}{latest_dir}{dmg}\n")
           EOF
 
-      - name: Download DMGs and compute checksums
-        id: shas
+      - name: Download DMG and compute checksum
+        id: sha
         run: |
-          curl -fsSL "${{ steps.versions.outputs.sequoia_url }}" -o sequoia.dmg
-          curl -fsSL "${{ steps.versions.outputs.sonoma_url }}" -o sonoma.dmg
-
-          echo "sequoia_sha=$(shasum -a 256 sequoia.dmg | awk '{print $1}')" >> "$GITHUB_OUTPUT"
-          echo "sonoma_sha=$(shasum -a 256 sonoma.dmg | awk '{print $1}')"   >> "$GITHUB_OUTPUT"
+          curl -fsSL "${{ steps.versions.outputs.url }}" -o antscope2.dmg
+          echo "sha256=$(shasum -a 256 antscope2.dmg | awk '{print $1}')" >> "$GITHUB_OUTPUT"
 
       - name: Update cask file
         run: |
-          export SEQUOIA_VERSION="${{ steps.versions.outputs.sequoia_version }}"
-          export SEQUOIA_SHA256="${{ steps.shas.outputs.sequoia_sha }}"
-          export SEQUOIA_URL="${{ steps.versions.outputs.sequoia_url }}"
-          export SONOMA_VERSION="${{ steps.versions.outputs.sonoma_version }}"
-          export SONOMA_SHA256="${{ steps.shas.outputs.sonoma_sha }}"
-          export SONOMA_URL="${{ steps.versions.outputs.sonoma_url }}"
-
+          export VERSION="${{ steps.versions.outputs.version }}"
+          export SHA256="${{ steps.sha.outputs.sha256 }}"
+          export URL="${{ steps.versions.outputs.url }}"
           envsubst < "Casks/antscope2.rb.in" > "Casks/antscope2.rb"
 
       - name: Commit and push changes
@@ -104,5 +87,5 @@ jobs:
           fi
 
           git add Casks/antscope2.rb
-          git commit -m "Update AntScope2 cask to v${{ steps.versions.outputs.sequoia_version }}"
+          git commit -m "Update AntScope2 cask to v${{ steps.versions.outputs.version }}"
           git push
