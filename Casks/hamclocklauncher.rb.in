@@ -1,19 +1,22 @@
 cask "hamclocklauncher" do
   version "${VERSION}"
 
+  on_arm do
+    sha256 "${ARM_SHA}"
+
+    url "https://github.com/huberthickman/HamClockLauncher/releases/download/release_#{version.dots_to_underscores}/HamClockLauncher.dmg"
+  end
+  on_intel do
+    sha256 "${INTEL_SHA}"
+
+    url "https://github.com/huberthickman/HamClockLauncher/releases/download/release_#{version.dots_to_underscores}/HamClockLauncherIntel.dmg"
+  end
+
   name "HamClock Launcher"
-  desc "macOS GUI launcher for the HamClock web application"
+  desc "GUI launcher for the HamClock web application"
   homepage "https://github.com/huberthickman/HamClockLauncher"
 
-  on_intel do
-    url "https://github.com/huberthickman/HamClockLauncher/releases/download/release_#{version.dots_to_underscores}/HamClockLauncherIntel.dmg"
-    sha256 "${INTEL_SHA}"
-  end
-
-  on_arm do
-    url "https://github.com/huberthickman/HamClockLauncher/releases/download/release_#{version.dots_to_underscores}/HamClockLauncher.dmg"
-    sha256 "${ARM_SHA}"
-  end
+  depends_on :macos
 
   app "HamClockLauncher.app"
 
