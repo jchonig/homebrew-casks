@@ -1,0 +1,108 @@
+name: Update AntScope2 Cask
+
+on:
+  schedule:
+    - cron: "0 7 * * *"   # daily at 07:00 UTC
+  workflow_dispatch:
+
+jobs:
+  update-cask:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Find latest versions and URLs
+        id: versions
+        run: |
+          python3 << 'EOF'
+          import urllib.request, urllib.parse, re, os, sys
+
+          BASE = "https://rigexpert.com/files/software/Antscope/antscope2formacos/"
+
+          def fetch(url):
+              with urllib.request.urlopen(url) as r:
+                  return r.read().decode("utf-8")
+
+          def find_dmg(html):
+              dmgs = re.findall(r'href="(AntScope2[^"]+\.dmg)"', html)
+              return dmgs[0] if dmgs else None
+
+          def version_key(href):
+              name = urllib.parse.unquote(href)
+              m = re.search(r"(\d+(?:\.\d+)+)", name)
+              return [int(x) for x in m.group(1).split(".")] if m else [0]
+
+          html = fetch(BASE)
+          hrefs = re.findall(r'href="([^"]+/)"', html)
+
+          sequoia_dirs = sorted(
+              [h for h in hrefs if "Sequoia" in urllib.parse.unquote(h)],
+              key=version_key,
+          )
+          sonoma_dirs = [
+              h for h in hrefs
+              if urllib.parse.unquote(h).startswith("Up") and "Sonoma" in urllib.parse.unquote(h)
+          ]
+
+          if not sequoia_dirs or not sonoma_dirs:
+              print("ERROR: could not find expected directories", file=sys.stderr)
+              sys.exit(1)
+
+          sequoia_dir = sequoia_dirs[-1]
+          sonoma_dir  = sonoma_dirs[-1]
+
+          sequoia_dmg = find_dmg(fetch(BASE + sequoia_dir))
+          sonoma_dmg  = find_dmg(fetch(BASE + sonoma_dir))
+
+          if not sequoia_dmg or not sonoma_dmg:
+              print("ERROR: could not find DMG files", file=sys.stderr)
+              sys.exit(1)
+
+          def get_version(fname):
+              m = re.search(r"AntScope2_([0-9.]+)_mac\.dmg", fname)
+              return m.group(1) if m else ""
+
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"sequoia_version={get_version(sequoia_dmg)}\n")
+              f.write(f"sequoia_url={BASE}{sequoia_dir}{sequoia_dmg}\n")
+              f.write(f"sonoma_version={get_version(sonoma_dmg)}\n")
+              f.write(f"sonoma_url={BASE}{sonoma_dir}{sonoma_dmg}\n")
+          EOF
+
+      - name: Download DMGs and compute checksums
+        id: shas
+        run: |
+          curl -fsSL "${{ steps.versions.outputs.sequoia_url }}" -o sequoia.dmg
+          curl -fsSL "${{ steps.versions.outputs.sonoma_url }}" -o sonoma.dmg
+
+          echo "sequoia_sha=$(shasum -a 256 sequoia.dmg | awk '{print $1}')" >> "$GITHUB_OUTPUT"
+          echo "sonoma_sha=$(shasum -a 256 sonoma.dmg | awk '{print $1}')"   >> "$GITHUB_OUTPUT"
+
+      - name: Update cask file
+        run: |
+          export SEQUOIA_VERSION="${{ steps.versions.outputs.sequoia_version }}"
+          export SEQUOIA_SHA256="${{ steps.shas.outputs.sequoia_sha }}"
+          export SEQUOIA_URL="${{ steps.versions.outputs.sequoia_url }}"
+          export SONOMA_VERSION="${{ steps.versions.outputs.sonoma_version }}"
+          export SONOMA_SHA256="${{ steps.shas.outputs.sonoma_sha }}"
+          export SONOMA_URL="${{ steps.versions.outputs.sonoma_url }}"
+
+          envsubst < "Casks/antscope2.rb.in" > "Casks/antscope2.rb"
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          if git diff --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git add Casks/antscope2.rb
+          git commit -m "Update AntScope2 cask to v${{ steps.versions.outputs.sequoia_version }}"
+          git push

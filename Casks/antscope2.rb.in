@@ -1,0 +1,25 @@
+cask "antscope2" do
+  on_sequoia :or_later do
+    version "${SEQUOIA_VERSION}"
+    sha256 "${SEQUOIA_SHA256}"
+    url "${SEQUOIA_URL}"
+  end
+
+  on_sonoma :or_earlier do
+    version "${SONOMA_VERSION}"
+    sha256 "${SONOMA_SHA256}"
+    url "${SONOMA_URL}"
+  end
+
+  name "AntScope2"
+  desc "Antenna analyzer software for RigExpert devices"
+  homepage "https://rigexpert.com/products/software/antscope2/"
+
+  app "AntScope2.app"
+
+  zap trash: [
+    "~/Library/Application Support/com.rigexpert.AntScope2",
+    "~/Library/Caches/com.rigexpert.AntScope2",
+    "~/Library/Preferences/com.rigexpert.AntScope2.plist",
+  ]
+end
