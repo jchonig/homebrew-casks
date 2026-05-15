@@ -61,6 +61,7 @@ if not dmg:
 m = re.search(r"AntScope2_([0-9.]+)_mac\.dmg", dmg)
 version = m.group(1) if m else ""
 url = BASE + latest_dir + dmg
+dir_part = latest_dir.rstrip("/")
 
 try:
     with open(CASK) as f:
@@ -89,7 +90,7 @@ finally:
     os.unlink(tmp_path)
 
 env = os.environ.copy()
-env.update({"VERSION": version, "SHA256": sha256, "URL": url})
+env.update({"VERSION": version, "SHA256": sha256, "DIR": dir_part})
 
 with open(f"{CASK}.in") as f:
     template = f.read()

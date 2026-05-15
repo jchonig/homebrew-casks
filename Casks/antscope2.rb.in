@@ -2,7 +2,7 @@ cask "antscope2" do
   version "${VERSION}"
   sha256 "${SHA256}"
 
-  url "${URL}"
+  url "https://rigexpert.com/files/software/Antscope/antscope2formacos/${DIR}/AntScope2_#{version}_mac.dmg"
   name "AntScope2"
   desc "Antenna analyzer software for RigExpert devices"
   homepage "https://rigexpert.com/products/software/antscope2/"
