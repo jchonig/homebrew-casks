@@ -1,0 +1,34 @@
+#!/bin/bash
+set -euo pipefail
+
+CASK="Casks/hamclocklauncher.rb"
+
+RELEASE=$(curl -fsSL --max-time 30 "https://api.github.com/repos/huberthickman/HamClockLauncher/releases/latest")
+export TAG
+TAG=$(echo "$RELEASE" | python3 -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")
+export VERSION
+VERSION=$(echo "$TAG" | sed 's/^release_//' | tr '_' '.')
+
+CURRENT_VERSION=$(grep -m1 'version "' "${CASK}" 2>/dev/null | sed 's/.*version "\([^"]*\)"/\1/' || true)
+if [[ "$CURRENT_VERSION" == "$VERSION" ]]; then
+    echo "hamclocklauncher: already at v${VERSION}"
+    exit 0
+fi
+
+BASE_URL="https://github.com/huberthickman/HamClockLauncher/releases/download/${TAG}"
+
+INTEL_DMG=$(mktemp)
+ARM_DMG=$(mktemp)
+trap 'rm -f "$INTEL_DMG" "$ARM_DMG"' EXIT
+
+curl -fsSL --max-time 120 -o "$INTEL_DMG" "${BASE_URL}/HamClockLauncherIntel.dmg"
+curl -fsSL --max-time 120 -o "$ARM_DMG" "${BASE_URL}/HamClockLauncher.dmg"
+
+export INTEL_SHA
+export ARM_SHA
+INTEL_SHA=$(shasum -a 256 "$INTEL_DMG" | awk '{print $1}')
+ARM_SHA=$(shasum -a 256 "$ARM_DMG" | awk '{print $1}')
+
+envsubst < "${CASK}.in" > "${CASK}"
+
+echo "hamclocklauncher: updated v${VERSION}"

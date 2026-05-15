@@ -1,0 +1,40 @@
+name: Update Casks
+
+on:
+  schedule:
+    - cron: "0 6 * * *"   # daily at 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Update casks
+        run: make update
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add Casks/antscope2.rb Casks/hamclocklauncher.rb
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          MSG=$(git diff --cached --name-only | while IFS= read -r f; do
+            name=$(basename "$f" .rb)
+            ver=$(grep -m1 'version "' "$f" | sed 's/.*version "\([^"]*\)"/\1/')
+            printf 'Update %s cask to v%s\n' "$name" "$ver"
+          done | paste -sd'; ' -)
+
+          git commit -m "$MSG"
+          git push

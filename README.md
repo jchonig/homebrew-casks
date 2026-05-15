@@ -15,11 +15,14 @@ brew tap jchonig/casks
 | `make style-fix` | Auto-correct style issues |
 | `make audit` | Audit casks (requires the tap to be registered) |
 | `make test` | Full test suite: style + audit |
+| `make update` | Fetch latest versions and update all cask files |
 
 A pre-commit hook runs `make style` automatically. If it fails, run
 `make style-fix` to auto-correct, then re-stage the fixed files.
 
 CI runs `make test` on every push or pull request that touches a cask file.
+`make update` is run daily by CI and can also be run locally; scripts that
+cannot reach their upstream (e.g. due to network restrictions) skip silently.
 
 ## AntScope2
 
