@@ -20,6 +20,8 @@ jobs:
 
       - name: Update casks
         run: make update
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit and push changes
         run: |
