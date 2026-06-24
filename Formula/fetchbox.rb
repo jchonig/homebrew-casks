@@ -1,17 +1,17 @@
 class Fetchbox < Formula
   desc "IMAP attachment fetcher that uploads to WebDAV (Nextcloud)"
   homepage "https://github.com/jchonig/docker-fetchbox"
-  version "0.4.8"
+  version "0.4.9"
   license "MIT"
 
   on_macos do
     on_arm do
       url "https://github.com/jchonig/docker-fetchbox/releases/download/v#{version}/fetchbox-darwin-arm64.tar.gz"
-      sha256 "8dcea3340ce22e0a888babb83047cd38ef1b9f04a441f684bcf4bf0d6bf2779f"
+      sha256 "3b9398695bba65caa5f705e14e6cc4ab7a90110dd7184e6db04bd27ccbe7a5f8"
     end
     on_intel do
       url "https://github.com/jchonig/docker-fetchbox/releases/download/v#{version}/fetchbox-darwin-amd64.tar.gz"
-      sha256 "fcf17244bd4ac37d2a3941adb89414ae534912a9921b14bcdd4ade89c2a222b9"
+      sha256 "45192febf212cb771f7ccc14d68f0b82d3b96e134f7d8c94ac5642d87e4da4bb"
     end
   end
 
