@@ -28,7 +28,7 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
 
-          git add Casks/antscope2.rb Casks/hamclocklauncher.rb
+          git add Casks/antscope2.rb Casks/hamclocklauncher.rb Formula/fetchbox.rb
 
           if git diff --cached --quiet; then
             echo "No changes to commit"
