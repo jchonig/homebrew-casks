@@ -1,17 +1,17 @@
 class Fetchbox < Formula
   desc "IMAP attachment fetcher that uploads to WebDAV (Nextcloud)"
   homepage "https://github.com/jchonig/docker-fetchbox"
-  version "0.4.7"
+  version "0.4.8"
   license "MIT"
 
   on_macos do
     on_arm do
       url "https://github.com/jchonig/docker-fetchbox/releases/download/v#{version}/fetchbox-darwin-arm64.tar.gz"
-      sha256 "2c1d3f3e29d09e18bc19f1da6f2d3eb31f42b200f1030427f59ed3f093048f82"
+      sha256 "8dcea3340ce22e0a888babb83047cd38ef1b9f04a441f684bcf4bf0d6bf2779f"
     end
     on_intel do
       url "https://github.com/jchonig/docker-fetchbox/releases/download/v#{version}/fetchbox-darwin-amd64.tar.gz"
-      sha256 "21e75bd9377b4f1fa438ee26f505d51c25643b5f72256de6e92c8d623cac78bd"
+      sha256 "fcf17244bd4ac37d2a3941adb89414ae534912a9921b14bcdd4ade89c2a222b9"
     end
   end
 
@@ -39,5 +39,6 @@ class Fetchbox < Formula
 
   test do
     assert_match "Usage", shell_output("#{bin}/fetchbox --help 2>&1", 2)
+    assert_match version, shell_output("#{bin}/fetchbox --version")
   end
 end
