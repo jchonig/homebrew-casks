@@ -1,7 +1,7 @@
 class Fetchbox < Formula
   desc "IMAP attachment fetcher that uploads to WebDAV (Nextcloud)"
   homepage "https://github.com/jchonig/docker-fetchbox"
-  version "0.4.0"
+  version "0.0.0"
   license "MIT"
 
   on_macos do
