@@ -7,11 +7,11 @@ class Fetchbox < Formula
   on_macos do
     on_arm do
       url "https://github.com/jchonig/docker-fetchbox/releases/download/v#{version}/fetchbox-darwin-arm64.tar.gz"
-      sha256 "8d0e6b0e6e46f1d4a5648fdaefc75de00101cf40d81f3b243dfa0ba89c666858"
+      sha256 "723f9dd399014717e04deaaae99e75cf4264853b1ac4df98b5030a061bd8f6c0"
     end
     on_intel do
       url "https://github.com/jchonig/docker-fetchbox/releases/download/v#{version}/fetchbox-darwin-amd64.tar.gz"
-      sha256 "39f36fcea5062fd936b06327b407d7e779d6fe1e630178326763d36c667a4932"
+      sha256 "0a0af6daf9c50acd9b6e02774eeb9192daa62ee7868f7d90e243ab81723bb1aa"
     end
   end
 
@@ -22,6 +22,7 @@ class Fetchbox < Formula
   service do
     run [opt_bin/"fetchbox", "--daemon"]
     keep_alive true
+    restart_service :changed
     log_path var/"log/fetchbox.log"
     error_log_path var/"log/fetchbox.log"
   end
