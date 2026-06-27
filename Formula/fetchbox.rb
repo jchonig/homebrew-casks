@@ -22,7 +22,6 @@ class Fetchbox < Formula
   service do
     run [opt_bin/"fetchbox", "--daemon"]
     keep_alive true
-    restart_service :changed
     log_path var/"log/fetchbox.log"
     error_log_path var/"log/fetchbox.log"
   end
