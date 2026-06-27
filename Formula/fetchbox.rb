@@ -7,11 +7,11 @@ class Fetchbox < Formula
   on_macos do
     on_arm do
       url "https://github.com/jchonig/docker-fetchbox/releases/download/v#{version}/fetchbox-darwin-arm64.tar.gz"
-      sha256 "36921e811a2182b3c241def32f9bc5d1cc94165ce0b1b2c131c837c4eab6d3dd"
+      sha256 "c5c25a6a53aadb30a9d10c0cd9fe87cf1060229d566ae71f8863f77114a3a3f4"
     end
     on_intel do
       url "https://github.com/jchonig/docker-fetchbox/releases/download/v#{version}/fetchbox-darwin-amd64.tar.gz"
-      sha256 "9420a38f2eeec214987ac9e4727eeb59dda6a8699dd3864b26a8c45e28d2905c"
+      sha256 "b663e44aff5edf3242402e9eea65ccdc53a3bacb83a47b3b00530f01673cc87e"
     end
   end
 

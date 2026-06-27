@@ -13,12 +13,6 @@ TAG=$(echo "$RELEASE" | python3 -c "import sys, json; print(json.load(sys.stdin)
 export VERSION
 VERSION="${TAG#v}"
 
-CURRENT_VERSION=$(grep -m1 'version "' "${FORMULA}" 2>/dev/null | sed 's/.*version "\([^"]*\)"/\1/' || true)
-if [[ "$CURRENT_VERSION" == "$VERSION" ]]; then
-    echo "fetchbox: already at v${VERSION}"
-    exit 0
-fi
-
 BASE_URL="https://github.com/${REPO}/releases/download/${TAG}"
 
 ARM_TGZ=$(mktemp)
@@ -32,6 +26,14 @@ export ARM_SHA
 export AMD_SHA
 ARM_SHA=$(shasum -a 256 "$ARM_TGZ" | awk '{print $1}')
 AMD_SHA=$(shasum -a 256 "$AMD_TGZ" | awk '{print $1}')
+
+CURRENT_VERSION=$(grep -m1 'version "' "${FORMULA}" 2>/dev/null | sed 's/.*version "\([^"]*\)"/\1/' || true)
+CURRENT_ARM_SHA=$(grep -A1 'on_arm' "${FORMULA}" 2>/dev/null | grep sha256 | awk '{print $2}' | tr -d '"' || true)
+
+if [[ "$CURRENT_VERSION" == "$VERSION" && "$CURRENT_ARM_SHA" == "$ARM_SHA" ]]; then
+    echo "fetchbox: already at v${VERSION} with correct checksums"
+    exit 0
+fi
 
 envsubst < "${FORMULA}.in" > "${FORMULA}"
 
