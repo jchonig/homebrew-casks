@@ -1,0 +1,32 @@
+#!/bin/bash
+set -euo pipefail
+
+CASK="Casks/htcommander.rb"
+REPO="Ylianst/HTCommander"
+
+CURL_AUTH=()
+[[ -n "${GITHUB_TOKEN:-}" ]] && CURL_AUTH=(-H "Authorization: Bearer ${GITHUB_TOKEN}")
+
+RELEASE=$(curl -fsSL --max-time 30 ${CURL_AUTH[@]+"${CURL_AUTH[@]}"} "https://api.github.com/repos/${REPO}/releases/latest")
+export TAG
+TAG=$(echo "$RELEASE" | python3 -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")
+export VERSION
+VERSION="${TAG#v}"
+
+CURRENT_VERSION=$(grep -m1 'version "' "${CASK}" 2>/dev/null | sed 's/.*version "\([^"]*\)"/\1/' || true)
+if [[ "$CURRENT_VERSION" == "$VERSION" ]]; then
+    echo "htcommander: already at v${VERSION}"
+    exit 0
+fi
+
+DMG=$(mktemp)
+trap 'rm -f "$DMG"' EXIT
+
+curl -fsSL --max-time 120 ${CURL_AUTH[@]+"${CURL_AUTH[@]}"} -o "$DMG" "https://github.com/${REPO}/releases/download/${TAG}/HTCommander.dmg"
+
+export SHA256
+SHA256=$(shasum -a 256 "$DMG" | awk '{print $1}')
+
+envsubst < "${CASK}.in" > "${CASK}"
+
+echo "htcommander: updated to v${VERSION}"
