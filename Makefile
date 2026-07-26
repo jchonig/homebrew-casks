@@ -22,6 +22,16 @@ audit:
 # Full test suite (style + audit)
 test: style audit
 
-# Run all cask/formula update scripts
+# Run all cask/formula update scripts; a failing script doesn't stop the rest,
+# but the target exits non-zero at the end if any script failed.
 update:
-	for script in scripts/update-*; do "$$script"; done
+	@fail=0; \
+	for script in scripts/update-*; do \
+		echo "==> Running $$script"; \
+		"$$script"; rc=$$?; \
+		if [ $$rc -ne 0 ]; then \
+			echo "!!! $$script failed (exit $$rc)" >&2; \
+			fail=1; \
+		fi; \
+	done; \
+	exit $$fail

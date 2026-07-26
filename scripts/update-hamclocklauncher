@@ -5,7 +5,7 @@ CASK="Casks/hamclocklauncher.rb"
 
 CURL_AUTH=()
 [[ -n "${GITHUB_TOKEN:-}" ]] && CURL_AUTH=(-H "Authorization: Bearer ${GITHUB_TOKEN}")
-RELEASE=$(curl -fsSL --max-time 30 "${CURL_AUTH[@]}" "https://api.github.com/repos/huberthickman/HamClockLauncher/releases/latest")
+RELEASE=$(curl -fsSL --max-time 30 ${CURL_AUTH[@]+"${CURL_AUTH[@]}"} "https://api.github.com/repos/huberthickman/HamClockLauncher/releases/latest")
 export TAG
 TAG=$(echo "$RELEASE" | python3 -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")
 export VERSION

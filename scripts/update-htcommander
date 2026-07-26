@@ -7,9 +7,18 @@ REPO="Ylianst/HTCommander"
 CURL_AUTH=()
 [[ -n "${GITHUB_TOKEN:-}" ]] && CURL_AUTH=(-H "Authorization: Bearer ${GITHUB_TOKEN}")
 
-RELEASE=$(curl -fsSL --max-time 30 ${CURL_AUTH[@]+"${CURL_AUTH[@]}"} "https://api.github.com/repos/${REPO}/releases/latest")
+RELEASES=$(curl -fsSL --max-time 30 ${CURL_AUTH[@]+"${CURL_AUTH[@]}"} "https://api.github.com/repos/${REPO}/releases")
 export TAG
-TAG=$(echo "$RELEASE" | python3 -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")
+TAG=$(echo "$RELEASES" | python3 -c "
+import sys, json, re
+releases = json.load(sys.stdin)
+for r in releases:
+    if not r['draft'] and not r['prerelease'] and re.match(r'^v\d', r['tag_name']):
+        print(r['tag_name'])
+        break
+else:
+    sys.exit('htcommander: no app release found (only data releases?)')
+")
 export VERSION
 VERSION="${TAG#v}"
 
