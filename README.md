@@ -5,17 +5,17 @@ be pushed upstream.
 
 ## Development
 
-```
+```bash
 brew tap jchonig/casks
 ```
 
-| Target | What it does |
-|---|---|
-| `make style` | Check cask style (run before committing) |
-| `make style-fix` | Auto-correct style issues |
-| `make audit` | Audit casks (requires the tap to be registered) |
-| `make test` | Full test suite: style + audit |
-| `make update` | Fetch latest versions and update all cask files |
+| Target           | What it does                                    |
+|------------------|-------------------------------------------------|
+| `make style`     | Check cask style (run before committing)        |
+| `make style-fix` | Auto-correct style issues                       |
+| `make audit`     | Audit casks (requires the tap to be registered) |
+| `make test`      | Full test suite: style + audit                  |
+| `make update`    | Fetch latest versions and update all cask files |
 
 A pre-commit hook runs `make style` automatically. If it fails, run
 `make style-fix` to auto-correct, then re-stage the fixed files.
