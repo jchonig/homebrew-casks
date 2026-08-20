@@ -36,3 +36,9 @@ earlier).
 [HamClockLauncher](https://huberthickman.github.io/HamClockLauncher/)
 is a macOS launcher for
 [HamClock](https://www.clearskyinstitute.com/ham/HamClock/).
+
+## graywolf
+
+[graywolf](https://github.com/chrissnell/graywolf) is an APRS station
+with a software modem, digipeater, iGate, and web UI. Installed as a
+Formula (CLI binaries `graywolf` and `graywolf-modem`), not a Cask.
