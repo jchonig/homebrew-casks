@@ -3,6 +3,11 @@ class Graywolf < Formula
   homepage "https://github.com/chrissnell/graywolf"
   license "GPL-2.0-or-later"
 
+  livecheck do
+    url :stable
+    strategy :github_latest
+  end
+
   on_macos do
     on_arm do
       url "https://github.com/chrissnell/graywolf/releases/download/v0.14.12/graywolf_0.14.12_macOS_arm64.tar.gz"

@@ -3,15 +3,11 @@ set -euo pipefail
 
 FORMULA="Formula/graywolf.rb"
 REPO="chrissnell/graywolf"
+TAP_FORMULA="jchonig/casks/graywolf"
 
-CURL_AUTH=()
-[[ -n "${GITHUB_TOKEN:-}" ]] && CURL_AUTH=(-H "Authorization: Bearer ${GITHUB_TOKEN}")
-
-RELEASE=$(curl -fsSL --max-time 30 ${CURL_AUTH[@]+"${CURL_AUTH[@]}"} "https://api.github.com/repos/${REPO}/releases/latest")
-export TAG
-TAG=$(echo "$RELEASE" | python3 -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")
 export VERSION
-VERSION="${TAG#v}"
+VERSION=$(brew livecheck --formula --json "${TAP_FORMULA}" | python3 -c "import sys, json; print(json.load(sys.stdin)[0]['version']['latest'])")
+TAG="v${VERSION}"
 
 BASE_URL="https://github.com/${REPO}/releases/download/${TAG}"
 
@@ -28,7 +24,7 @@ ARM_SHA=$(shasum -a 256 "$ARM_TGZ" | awk '{print $1}')
 AMD_SHA=$(shasum -a 256 "$AMD_TGZ" | awk '{print $1}')
 
 CURRENT_VERSION=$(grep -m1 'url "' "${FORMULA}" 2>/dev/null | sed -n 's#.*/v\([0-9][^/]*\)/.*#\1#p')
-CURRENT_ARM_SHA=$(grep -A1 'on_arm' "${FORMULA}" 2>/dev/null | grep sha256 | awk '{print $2}' | tr -d '"' || true)
+CURRENT_ARM_SHA=$(grep -A2 'on_arm' "${FORMULA}" 2>/dev/null | grep sha256 | awk '{print $2}' | tr -d '"' || true)
 
 if [[ "$CURRENT_VERSION" == "$VERSION" && "$CURRENT_ARM_SHA" == "$ARM_SHA" ]]; then
     echo "graywolf: already at v${VERSION} with correct checksums"

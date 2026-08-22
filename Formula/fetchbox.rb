@@ -3,6 +3,11 @@ class Fetchbox < Formula
   homepage "https://github.com/jchonig/docker-fetchbox"
   license "MIT"
 
+  livecheck do
+    url :stable
+    strategy :github_latest
+  end
+
   on_macos do
     on_arm do
       url "https://github.com/jchonig/docker-fetchbox/releases/download/v0.4.13/fetchbox-darwin-arm64.tar.gz"
