@@ -4,9 +4,11 @@ on:
   push:
     paths:
       - "Casks/*.rb"
+      - "Formula/*.rb"
   pull_request:
     paths:
       - "Casks/*.rb"
+      - "Formula/*.rb"
   workflow_dispatch:
 
 jobs:
