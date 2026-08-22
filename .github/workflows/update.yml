@@ -42,7 +42,7 @@ jobs:
           done | paste -sd'; ' -)
 
           git commit -m "$MSG"
-          git push
+          git push origin HEAD:main
 
   keepalive:
     if: github.event_name == 'schedule'
