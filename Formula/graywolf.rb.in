@@ -18,13 +18,29 @@ class Graywolf < Formula
   def install
     bin.install "graywolf"
     bin.install "graywolf-modem"
+    (var/"graywolf").mkpath
+    (var/"log").mkpath
+  end
+
+  service do
+    run [opt_bin/"graywolf"]
+    working_dir var/"graywolf"
+    keep_alive true
+    log_path var/"log/graywolf.log"
+    error_log_path var/"log/graywolf.log"
   end
 
   def caveats
     <<~EOS
       Graywolf keeps its config database, tile cache, and other state in
-      the current working directory by default. Run it from a dedicated
-      directory:
+      its working directory.
+
+      To run graywolf as a background service (recommended for unattended
+      digipeater/iGate operation), state is kept under
+      #{var}/graywolf and the web UI listens on http://127.0.0.1:8080:
+        brew services start graywolf
+
+      To run it interactively instead, use a dedicated directory:
         mkdir -p ~/.graywolf && cd ~/.graywolf && graywolf
 
       See the handbook for configuration and operation:
@@ -34,5 +50,14 @@ class Graywolf < Formula
 
   test do
     assert_match "Usage of graywolf", shell_output("#{bin}/graywolf -h 2>&1")
+
+    port = free_port
+    pid = spawn bin/"graywolf", "-http", "127.0.0.1:#{port}"
+    sleep 3
+
+    response = JSON.parse(shell_output("curl -fs http://127.0.0.1:#{port}/api/version"))
+    assert_equal version.to_s, response["version"]
+  ensure
+    Process.kill("TERM", pid)
   end
 end
