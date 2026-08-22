@@ -27,7 +27,7 @@ export AMD_SHA
 ARM_SHA=$(shasum -a 256 "$ARM_TGZ" | awk '{print $1}')
 AMD_SHA=$(shasum -a 256 "$AMD_TGZ" | awk '{print $1}')
 
-CURRENT_VERSION=$(grep -m1 'version "' "${FORMULA}" 2>/dev/null | sed 's/.*version "\([^"]*\)"/\1/' || true)
+CURRENT_VERSION=$(grep -m1 'url "' "${FORMULA}" 2>/dev/null | sed -n 's#.*/v\([0-9][^/]*\)/.*#\1#p')
 CURRENT_ARM_SHA=$(grep -A1 'on_arm' "${FORMULA}" 2>/dev/null | grep sha256 | awk '{print $2}' | tr -d '"' || true)
 
 if [[ "$CURRENT_VERSION" == "$VERSION" && "$CURRENT_ARM_SHA" == "$ARM_SHA" ]]; then
