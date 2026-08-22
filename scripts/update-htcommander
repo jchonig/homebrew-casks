@@ -3,24 +3,14 @@ set -euo pipefail
 
 CASK="Casks/htcommander.rb"
 REPO="Ylianst/HTCommander"
+TAP_CASK="jchonig/casks/htcommander"
 
 CURL_AUTH=()
 [[ -n "${GITHUB_TOKEN:-}" ]] && CURL_AUTH=(-H "Authorization: Bearer ${GITHUB_TOKEN}")
 
-RELEASES=$(curl -fsSL --max-time 30 ${CURL_AUTH[@]+"${CURL_AUTH[@]}"} "https://api.github.com/repos/${REPO}/releases")
-export TAG
-TAG=$(echo "$RELEASES" | python3 -c "
-import sys, json, re
-releases = json.load(sys.stdin)
-for r in releases:
-    if not r['draft'] and not r['prerelease'] and re.match(r'^v\d', r['tag_name']):
-        print(r['tag_name'])
-        break
-else:
-    sys.exit('htcommander: no app release found (only data releases?)')
-")
 export VERSION
-VERSION="${TAG#v}"
+VERSION=$(brew livecheck --cask --json "${TAP_CASK}" | python3 -c "import sys, json; print(json.load(sys.stdin)[0]['version']['latest'])")
+TAG="v${VERSION}"
 
 CURRENT_VERSION=$(grep -m1 'version "' "${CASK}" 2>/dev/null | sed 's/.*version "\([^"]*\)"/\1/' || true)
 if [[ "$CURRENT_VERSION" == "$VERSION" ]]; then

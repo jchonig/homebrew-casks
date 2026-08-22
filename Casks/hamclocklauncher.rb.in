@@ -16,6 +16,15 @@ cask "hamclocklauncher" do
   desc "GUI launcher for the HamClock web application"
   homepage "https://github.com/huberthickman/HamClockLauncher"
 
+  livecheck do
+    url :url
+    regex(/^release_(\d+(?:_\d+)+)$/i)
+    strategy :github_latest do |json, regex|
+      match = json["tag_name"]&.match(regex)
+      match&.[](1)&.tr("_", ".")
+    end
+  end
+
   depends_on :macos
 
   app "HamClockLauncher.app"

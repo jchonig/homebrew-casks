@@ -7,6 +7,11 @@ cask "htcommander" do
   desc "Remote management software for MeshCentral managed devices"
   homepage "https://github.com/Ylianst/HTCommander"
 
+  livecheck do
+    url :url
+    strategy :github_latest
+  end
+
   depends_on :macos
 
   app "Handi-Talky Commander.app"

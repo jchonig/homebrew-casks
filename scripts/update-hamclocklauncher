@@ -2,14 +2,11 @@
 set -euo pipefail
 
 CASK="Casks/hamclocklauncher.rb"
+TAP_CASK="jchonig/casks/hamclocklauncher"
 
-CURL_AUTH=()
-[[ -n "${GITHUB_TOKEN:-}" ]] && CURL_AUTH=(-H "Authorization: Bearer ${GITHUB_TOKEN}")
-RELEASE=$(curl -fsSL --max-time 30 ${CURL_AUTH[@]+"${CURL_AUTH[@]}"} "https://api.github.com/repos/huberthickman/HamClockLauncher/releases/latest")
-export TAG
-TAG=$(echo "$RELEASE" | python3 -c "import sys, json; print(json.load(sys.stdin)['tag_name'])")
 export VERSION
-VERSION=$(echo "$TAG" | sed 's/^release_//' | tr '_' '.')
+VERSION=$(brew livecheck --cask --json "${TAP_CASK}" | python3 -c "import sys, json; print(json.load(sys.stdin)[0]['version']['latest'])")
+TAG="release_${VERSION//./_}"
 
 CURRENT_VERSION=$(grep -m1 'version "' "${CASK}" 2>/dev/null | sed 's/.*version "\([^"]*\)"/\1/' || true)
 if [[ "$CURRENT_VERSION" == "$VERSION" ]]; then
