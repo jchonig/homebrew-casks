@@ -37,8 +37,19 @@ earlier).
 is a macOS launcher for
 [HamClock](https://www.clearskyinstitute.com/ham/HamClock/).
 
+## HTCommander
+
+[HTCommander](https://github.com/Ylianst/HTCommander) is remote management
+software for MeshCentral managed devices.
+
 ## graywolf
 
 [graywolf](https://github.com/chrissnell/graywolf) is an APRS station
 with a software modem, digipeater, iGate, and web UI. Installed as a
 Formula (CLI binaries `graywolf` and `graywolf-modem`), not a Cask.
+
+## fetchbox
+
+[fetchbox](https://github.com/jchonig/docker-fetchbox) is an IMAP
+attachment fetcher that uploads to WebDAV (Nextcloud). Installed as a
+Formula (CLI binary `fetchbox`), not a Cask.
