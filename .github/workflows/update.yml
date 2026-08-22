@@ -42,7 +42,9 @@ jobs:
           done | paste -sd'; ' -)
 
           git commit -m "$MSG"
-          git push origin HEAD:main
+          git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   keepalive:
     if: github.event_name == 'schedule'
