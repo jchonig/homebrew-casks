@@ -1,8 +1,17 @@
 cask "antscope2" do
-  version "${VERSION}"
-  sha256 "${SHA256}"
+  on_sonoma :or_older do
+    version "${SONOMA_VERSION}"
+    sha256 "${SONOMA_SHA256}"
 
-  url "https://rigexpert.com/files/software/Antscope/antscope2formacos/${DIR}/AntScope2_#{version}_mac.dmg"
+    url "https://rigexpert.com/files/software/Antscope/antscope2formacos/${SONOMA_DIR}/AntScope2_#{version}_mac.dmg"
+  end
+  on_sequoia :or_newer do
+    version "${SEQUOIA_VERSION}"
+    sha256 "${SEQUOIA_SHA256}"
+
+    url "https://rigexpert.com/files/software/Antscope/antscope2formacos/${SEQUOIA_DIR}/AntScope2_#{version}_mac.dmg"
+  end
+
   name "AntScope2"
   desc "Antenna analyzer software for RigExpert devices"
   homepage "https://rigexpert.com/products/software/antscope2/"
@@ -24,7 +33,7 @@ cask "antscope2" do
     end
   end
 
-  depends_on macos: :sequoia
+  depends_on :macos
 
   app "AntScope2.app"
 
