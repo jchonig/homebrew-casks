@@ -17,8 +17,8 @@ cask "htcommander" do
   app "Handi-Talky Commander.app"
 
   zap trash: [
-    "~/Library/Application Support/com.example.htcommander",
-    "~/Library/Caches/com.example.htcommander",
-    "~/Library/Preferences/com.example.htcommander.plist",
+    "~/Library/Application Support/com.meshcentral.htcommander",
+    "~/Library/Caches/com.meshcentral.htcommander",
+    "~/Library/Preferences/com.meshcentral.htcommander.plist",
   ]
 end
