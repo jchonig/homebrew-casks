@@ -48,6 +48,31 @@ software for MeshCentral managed devices.
 [graywolf](https://github.com/chrissnell/graywolf) is an APRS station
 with a software modem, digipeater, iGate, and web UI. Installed as a
 Formula (CLI binaries `graywolf` and `graywolf-modem`), not a Cask.
+Prebuilt binaries are used for both macOS and Linux (arm64/x86_64).
+
+As a background service, graywolf keeps its SQLite config database,
+tile cache, and other state under `$(brew --prefix)/var/graywolf`, and
+logs to `$(brew --prefix)/var/log/graywolf.log`. The web UI listens on
+<http://127.0.0.1:8080>.
+
+Start/stop it as a service (recommended for unattended digipeater/iGate
+operation — this uses `launchd` on macOS and `systemd` on Linux):
+
+```bash
+brew services start graywolf
+brew services stop graywolf
+```
+
+To run it interactively instead, use a dedicated working directory (its
+config database and state are written relative to the current directory
+when not run as a service):
+
+```bash
+mkdir -p ~/.graywolf && cd ~/.graywolf && graywolf
+```
+
+See the [handbook](https://chrissnell.com/software/graywolf/) for
+configuration and operation details.
 
 ## fetchbox
 
