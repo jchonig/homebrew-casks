@@ -19,6 +19,17 @@ class Graywolf < Formula
     end
   end
 
+  on_linux do
+    on_arm do
+      url "https://github.com/chrissnell/graywolf/releases/download/v0.14.13/graywolf_0.14.13_linux_arm64.tar.gz"
+      sha256 "cd98ba91208be5c3c48239e075a13b2802eccd2d21566f94a5d9cf7dc66a4746"
+    end
+    on_intel do
+      url "https://github.com/chrissnell/graywolf/releases/download/v0.14.13/graywolf_0.14.13_linux_x86_64.tar.gz"
+      sha256 "3745777c37c51a3e673d53938c3c1ab00ad8002b8a682f778892a2419ae76bc2"
+    end
+  end
+
   def install
     bin.install "graywolf"
     bin.install "graywolf-modem"
@@ -57,9 +68,19 @@ class Graywolf < Formula
 
     port = free_port
     pid = spawn bin/"graywolf", "-http", "127.0.0.1:#{port}"
-    sleep 3
 
-    response = JSON.parse(shell_output("curl -fs http://127.0.0.1:#{port}/api/version"))
+    response = nil
+    20.times do
+      sleep 0.5
+      begin
+        response = JSON.parse(shell_output("curl -fs http://127.0.0.1:#{port}/api/version"))
+        break
+      rescue
+        next
+      end
+    end
+
+    refute_nil response
     assert_equal version.to_s, response["version"]
   ensure
     Process.kill("TERM", pid)

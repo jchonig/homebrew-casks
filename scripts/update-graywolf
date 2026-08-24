@@ -11,22 +11,30 @@ TAG="v${VERSION}"
 
 BASE_URL="https://github.com/${REPO}/releases/download/${TAG}"
 
-ARM_TGZ=$(mktemp)
-AMD_TGZ=$(mktemp)
-trap 'rm -f "$ARM_TGZ" "$AMD_TGZ"' EXIT
+MACOS_ARM_TGZ=$(mktemp)
+MACOS_AMD_TGZ=$(mktemp)
+LINUX_ARM_TGZ=$(mktemp)
+LINUX_AMD_TGZ=$(mktemp)
+trap 'rm -f "$MACOS_ARM_TGZ" "$MACOS_AMD_TGZ" "$LINUX_ARM_TGZ" "$LINUX_AMD_TGZ"' EXIT
 
-curl -fsSL --max-time 120 -o "$ARM_TGZ" "${BASE_URL}/graywolf_${VERSION}_macOS_arm64.tar.gz"
-curl -fsSL --max-time 120 -o "$AMD_TGZ" "${BASE_URL}/graywolf_${VERSION}_macOS_x86_64.tar.gz"
+curl -fsSL --max-time 120 -o "$MACOS_ARM_TGZ" "${BASE_URL}/graywolf_${VERSION}_macOS_arm64.tar.gz"
+curl -fsSL --max-time 120 -o "$MACOS_AMD_TGZ" "${BASE_URL}/graywolf_${VERSION}_macOS_x86_64.tar.gz"
+curl -fsSL --max-time 120 -o "$LINUX_ARM_TGZ" "${BASE_URL}/graywolf_${VERSION}_linux_arm64.tar.gz"
+curl -fsSL --max-time 120 -o "$LINUX_AMD_TGZ" "${BASE_URL}/graywolf_${VERSION}_linux_x86_64.tar.gz"
 
-export ARM_SHA
-export AMD_SHA
-ARM_SHA=$(shasum -a 256 "$ARM_TGZ" | awk '{print $1}')
-AMD_SHA=$(shasum -a 256 "$AMD_TGZ" | awk '{print $1}')
+export MACOS_ARM_SHA
+export MACOS_AMD_SHA
+export LINUX_ARM_SHA
+export LINUX_AMD_SHA
+MACOS_ARM_SHA=$(shasum -a 256 "$MACOS_ARM_TGZ" | awk '{print $1}')
+MACOS_AMD_SHA=$(shasum -a 256 "$MACOS_AMD_TGZ" | awk '{print $1}')
+LINUX_ARM_SHA=$(shasum -a 256 "$LINUX_ARM_TGZ" | awk '{print $1}')
+LINUX_AMD_SHA=$(shasum -a 256 "$LINUX_AMD_TGZ" | awk '{print $1}')
 
 CURRENT_VERSION=$(grep -m1 'url "' "${FORMULA}" 2>/dev/null | sed -n 's#.*/v\([0-9][^/]*\)/.*#\1#p')
-CURRENT_ARM_SHA=$(grep -A2 'on_arm' "${FORMULA}" 2>/dev/null | grep sha256 | awk '{print $2}' | tr -d '"' || true)
+CURRENT_MACOS_ARM_SHA=$(grep -A2 'on_arm' "${FORMULA}" 2>/dev/null | grep sha256 | head -1 | awk '{print $2}' | tr -d '"' || true)
 
-if [[ "$CURRENT_VERSION" == "$VERSION" && "$CURRENT_ARM_SHA" == "$ARM_SHA" ]]; then
+if [[ "$CURRENT_VERSION" == "$VERSION" && "$CURRENT_MACOS_ARM_SHA" == "$MACOS_ARM_SHA" ]]; then
     echo "graywolf: already at v${VERSION} with correct checksums"
     exit 0
 fi

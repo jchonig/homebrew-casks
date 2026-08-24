@@ -11,11 +11,22 @@ class Graywolf < Formula
   on_macos do
     on_arm do
       url "https://github.com/chrissnell/graywolf/releases/download/v${VERSION}/graywolf_${VERSION}_macOS_arm64.tar.gz"
-      sha256 "${ARM_SHA}"
+      sha256 "${MACOS_ARM_SHA}"
     end
     on_intel do
       url "https://github.com/chrissnell/graywolf/releases/download/v${VERSION}/graywolf_${VERSION}_macOS_x86_64.tar.gz"
-      sha256 "${AMD_SHA}"
+      sha256 "${MACOS_AMD_SHA}"
+    end
+  end
+
+  on_linux do
+    on_arm do
+      url "https://github.com/chrissnell/graywolf/releases/download/v${VERSION}/graywolf_${VERSION}_linux_arm64.tar.gz"
+      sha256 "${LINUX_ARM_SHA}"
+    end
+    on_intel do
+      url "https://github.com/chrissnell/graywolf/releases/download/v${VERSION}/graywolf_${VERSION}_linux_x86_64.tar.gz"
+      sha256 "${LINUX_AMD_SHA}"
     end
   end
 
@@ -57,9 +68,19 @@ class Graywolf < Formula
 
     port = free_port
     pid = spawn bin/"graywolf", "-http", "127.0.0.1:#{port}"
-    sleep 3
 
-    response = JSON.parse(shell_output("curl -fs http://127.0.0.1:#{port}/api/version"))
+    response = nil
+    20.times do
+      sleep 0.5
+      begin
+        response = JSON.parse(shell_output("curl -fs http://127.0.0.1:#{port}/api/version"))
+        break
+      rescue
+        next
+      end
+    end
+
+    refute_nil response
     assert_equal version.to_s, response["version"]
   ensure
     Process.kill("TERM", pid)
