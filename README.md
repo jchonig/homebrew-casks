@@ -1,13 +1,34 @@
-# My homebrew casks
+# My homebrew casks and formulae
 
 This contains Casks and Formulae that I am developing, or that are not
 suitable to be pushed upstream.
 
-## Development
-
 ```bash
 brew tap jchonig/casks
 ```
+
+You either need to trust this whole tap, or the individual formula/casks you
+want to install:
+
+```bash
+brew trust --tap jchonig/casks
+```
+
+or for a cask:
+
+```bash
+brew trust --cask jchonig/casks/antscope2
+brew install --cask jchonig/casks/antscope2
+```
+
+or a formula:
+
+```bash
+brew trust --formula jchonig/casks/graywolf
+brew install jchonig/casks/graywolf
+```
+
+## Development
 
 | Target           | What it does                                                  |
 |------------------|----------------------------------------------------------------|
