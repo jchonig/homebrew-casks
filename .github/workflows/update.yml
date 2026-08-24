@@ -37,8 +37,18 @@ jobs:
 
           MSG=$(git diff --cached --name-only | while IFS= read -r f; do
             name=$(basename "$f" .rb)
+            case "$f" in
+              Casks/*) kind="cask" ;;
+              Formula/*) kind="formula" ;;
+              *) kind="package" ;;
+            esac
             ver=$(grep -m1 'version "' "$f" | sed 's/.*version "\([^"]*\)"/\1/')
-            printf 'Update %s cask to v%s\n' "$name" "$ver"
+            if [ -z "$ver" ]; then
+              # Formula files have no top-level `version` field; pull it from
+              # the first release URL instead (e.g. .../download/v1.2.3/...).
+              ver=$(grep -o '/v[0-9][^/"]*/' "$f" | head -1 | tr -d '/v')
+            fi
+            printf 'Update %s %s to v%s\n' "$name" "$kind" "$ver"
           done | paste -sd'; ' -)
 
           git commit -m "$MSG"
