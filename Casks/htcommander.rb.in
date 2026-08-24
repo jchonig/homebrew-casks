@@ -4,7 +4,7 @@ cask "htcommander" do
 
   url "https://github.com/Ylianst/HTCommander/releases/download/v#{version}/HTCommander.dmg"
   name "Handi-Talky Commander"
-  desc "Remote management software for MeshCentral managed devices"
+  desc "Control app for UV-Pro, GA-5WB, VR-N76, and VR-N7500 HAM radios"
   homepage "https://github.com/Ylianst/HTCommander"
 
   livecheck do

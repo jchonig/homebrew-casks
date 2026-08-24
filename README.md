@@ -40,8 +40,9 @@ is a macOS launcher for
 
 ## HTCommander
 
-[HTCommander](https://github.com/Ylianst/HTCommander) is remote management
-software for MeshCentral managed devices.
+[HTCommander](https://github.com/Ylianst/HTCommander) is a multi-platform
+tool for the UV-Pro, GA-5WB, VR-N76, and VR-N7500 HAM radios, allowing easy
+control over your radio.
 
 ## graywolf
 
