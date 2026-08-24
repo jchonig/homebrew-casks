@@ -10,12 +10,12 @@ class Graywolf < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/chrissnell/graywolf/releases/download/v0.14.12/graywolf_0.14.12_macOS_arm64.tar.gz"
-      sha256 "acc3d382a8425cf6d5a50d21f7d8ade48427e3edd934870e5f4a144e749e990a"
+      url "https://github.com/chrissnell/graywolf/releases/download/v0.14.13/graywolf_0.14.13_macOS_arm64.tar.gz"
+      sha256 "1f7429e7fa8d2d8ff7d93e3aec48c5a5e4fc720afc30293faa3518a84f6ee43a"
     end
     on_intel do
-      url "https://github.com/chrissnell/graywolf/releases/download/v0.14.12/graywolf_0.14.12_macOS_x86_64.tar.gz"
-      sha256 "65847627996264b3decac7de18a04a4480669ab65b15c741693d22baa01fe2b0"
+      url "https://github.com/chrissnell/graywolf/releases/download/v0.14.13/graywolf_0.14.13_macOS_x86_64.tar.gz"
+      sha256 "fb9977a1cc8131ebe6d72e8b192aa0e32c9bc7c30a78a3933396319cc7fb8955"
     end
   end
 
