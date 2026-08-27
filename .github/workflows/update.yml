@@ -37,14 +37,16 @@ jobs:
 
           MSG=$(git diff --cached --name-only | while IFS= read -r f; do
             name=$(basename "$f" .rb)
-            case "$f" in
-              Casks/*) kind="cask" ;;
-              Formula/*) kind="formula" ;;
-              *) kind="package" ;;
-            esac
+            if [[ "$f" == Casks/* ]]; then
+              kind="cask"
+            elif [[ "$f" == Formula/* ]]; then
+              kind="formula"
+            else
+              kind="package"
+            fi
             ver=$(grep -m1 'version "' "$f" | sed 's/.*version "\([^"]*\)"/\1/')
             if [ -z "$ver" ]; then
-              # Formula files have no top-level `version` field; pull it from
+              # Formula files have no top-level 'version' field; pull it from
               # the first release URL instead (e.g. .../download/v1.2.3/...).
               ver=$(grep -o '/v[0-9][^/"]*/' "$f" | head -1 | tr -d '/v')
             fi
