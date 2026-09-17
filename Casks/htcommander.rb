@@ -9,7 +9,7 @@ cask "htcommander" do
 
   livecheck do
     url :url
-    strategy :github_latest
+    strategy :github_releases
   end
 
   depends_on :macos
