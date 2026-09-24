@@ -6,8 +6,8 @@ cask "antscope2" do
     url "https://rigexpert.com/files/software/Antscope/antscope2formacos/Up%20to%20MacOS%20Sonoma%2014.2.1/AntScope2_#{version}_mac.dmg"
   end
   on_sequoia :or_newer do
-    version "2.0.2"
-    sha256 "b3c49741d065745eb28fb1d9513c73914f474d107cc6d3869b7ab102cd52d6ed"
+    version "2.0.3"
+    sha256 "b0aa3f88fd20410a35dd9a58e8c9cece7fc1baa845e464f8f57bd39c15310505"
 
     url "https://rigexpert.com/files/software/Antscope/antscope2formacos/From%20MacOS%20Sequoia%2015.7.2/AntScope2_#{version}_mac.dmg"
   end
