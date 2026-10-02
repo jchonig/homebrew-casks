@@ -10,23 +10,23 @@ class Graywolf < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/chrissnell/graywolf/releases/download/v0.14.13/graywolf_0.14.13_macOS_arm64.tar.gz"
-      sha256 "1f7429e7fa8d2d8ff7d93e3aec48c5a5e4fc720afc30293faa3518a84f6ee43a"
+      url "https://github.com/chrissnell/graywolf/releases/download/v0.14.14/graywolf_0.14.14_macOS_arm64.tar.gz"
+      sha256 "1fdc58aab8dea7dd72fbdbb57be5067a828b48db22a529b4c185a29424d2c4f5"
     end
     on_intel do
-      url "https://github.com/chrissnell/graywolf/releases/download/v0.14.13/graywolf_0.14.13_macOS_x86_64.tar.gz"
-      sha256 "fb9977a1cc8131ebe6d72e8b192aa0e32c9bc7c30a78a3933396319cc7fb8955"
+      url "https://github.com/chrissnell/graywolf/releases/download/v0.14.14/graywolf_0.14.14_macOS_x86_64.tar.gz"
+      sha256 "50ede751ca8df86931ced6d011e1f8eeffe15b12ac6139492412d9fe0dd48703"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/chrissnell/graywolf/releases/download/v0.14.13/graywolf_0.14.13_linux_arm64.tar.gz"
-      sha256 "cd98ba91208be5c3c48239e075a13b2802eccd2d21566f94a5d9cf7dc66a4746"
+      url "https://github.com/chrissnell/graywolf/releases/download/v0.14.14/graywolf_0.14.14_linux_arm64.tar.gz"
+      sha256 "e4cf639bd0e9bbddef16ec6d5175416b3ccf74cb2d84a84d52499c9000da52c5"
     end
     on_intel do
-      url "https://github.com/chrissnell/graywolf/releases/download/v0.14.13/graywolf_0.14.13_linux_x86_64.tar.gz"
-      sha256 "3745777c37c51a3e673d53938c3c1ab00ad8002b8a682f778892a2419ae76bc2"
+      url "https://github.com/chrissnell/graywolf/releases/download/v0.14.14/graywolf_0.14.14_linux_x86_64.tar.gz"
+      sha256 "9d8c47cec2660da52b01fed5686cb1dd4f5d3bb12e63bf07e100c1d3f8821542"
     end
   end
 
