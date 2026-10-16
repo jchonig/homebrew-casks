@@ -1,6 +1,6 @@
 cask "htcommander" do
-  version "0.1.85"
-  sha256 "617c1043b047314d06efb0ffe77dd8a8525e24891754d8e05d05c0e1ad74f10b"
+  version "0.1.86"
+  sha256 "ea59a899334deac88aa4179eab1a0b647e43a96156a3c7382b527e3a62c12427"
 
   url "https://github.com/Ylianst/HTCommander/releases/download/v#{version}/HTCommander.dmg"
   name "Handi-Talky Commander"
